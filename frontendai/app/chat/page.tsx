@@ -35,6 +35,8 @@ export default function ChatPage() {
                     />
                     <button type="submit" className="btn btn-outline btn-info">Submit</button>
                 </form>
+
+                <p className="text-lg">just throwing this here</p>
             </main>
             <footer className="text-center text-sm fixed bottom-0 left-0 w-full bg-white py-2">
                 <p>© 2024 InShort. All rights reserved.</p>
