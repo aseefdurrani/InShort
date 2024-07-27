@@ -1,0 +1,12 @@
+flask
+transformers
+torch
+scikit-learn
+pandas
+reque
+
+
+** While in the backend directory (cd backend), execute the following on macOS
+python3 -m venv venv
+source venv/bin/activate
+pip install flask transformers torch scikit-learn pandas
