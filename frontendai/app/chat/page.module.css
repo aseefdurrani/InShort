@@ -1,3 +1,23 @@
+/* Fade In and Fade Out Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.fadeIn {
+  animation: fadeIn 1s forwards;
+}
+
+.fadeOut {
+  animation: fadeOut 1s forwards;
+}
+
+/* Container for the entire page */
 .container {
   display: flex;
   flex-direction: column;
@@ -21,6 +41,7 @@
 
 .header p {
   font-size: 1.2rem;
+  color: #ffe;
   margin-bottom: 1rem;
 }
 
@@ -29,6 +50,7 @@
   opacity: 0.7;
 }
 
+/* Main Content Area */
 .main {
   flex: 1;
   display: flex;
@@ -38,82 +60,80 @@
   padding: 2rem;
 }
 
-.feature {
+/* Form and Label Styling */
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+.label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  width: 100%;
   text-align: center;
-  margin: 2rem 0;
-  max-width: 600px;
+  margin-bottom: 16px;
+  white-space: nowrap; /* Ensure text stays on one line */
 }
 
-.feature h2 {
+.labelText {
   font-size: 1.5rem;
-  margin-bottom: 0.5rem;
+  color: #bbb; /* Softer grey for better contrast */
 }
 
-.feature p {
+/* Input Wrapper for Text Area and Submit Button */
+.inputWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  min-width: 420px;
+}
+
+.textarea {
+  width: 100%;
+  padding: 10px;
+  resize: none;
+  overflow: hidden;
   font-size: 1rem;
-  opacity: 0.8;
+  min-height: 40px;
+  max-height: 200px;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  border-radius: 8px; /* Rounded corners */
+  border: 2px solid #333; /* White border for better visibility */
+  background-color: #333; /* Darker background */
+  color: #fff; /* White text */
+  outline: none; /* Remove default outline */
+  padding-right: 40px; /* Space for the button */
+  transition: border-color 0.3s;
 }
 
-/* Button Styles */
-.button {
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  background-color: #fff;
-  color: #000;
-  text-transform: uppercase;
-  font-weight: bold;
-  border-radius: 25px;
-  text-decoration: none;
-  transition: background-color 0.3s, color 0.3s;
+.textarea:focus {
+  border-color: #ccc;
 }
 
-.button:hover {
-  background-color: #000;
-  color: #fff;
-  border: 2px solid #fff;
+.submitButton {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #ccc; /* Gray color for the arrow */
+  font-size: 1.5rem; /* Adjust size as needed */
+  cursor: pointer;
+  outline: none;
+  transition: color 0.3s;
 }
 
-/* Media Queries */
-@media (max-width: 700px) {
-  .header h1 {
-    font-size: 2.5rem;
-  }
-
-  .header p {
-    font-size: 1rem;
-  }
-
-  .feature h2 {
-    font-size: 1.3rem;
-  }
-
-  .feature p {
-    font-size: 0.9rem;
-  }
-
-  .button {
-    padding: 0.5rem 1rem;
-  }
+.submitButton:hover {
+  color: #fff; /* White color on hover */
 }
 
-@media (min-width: 701px) and (max-width: 1120px) {
-  .feature {
-    margin: 1.5rem 0;
-  }
-
-  .header h1 {
-    font-size: 2.8rem;
-  }
-
-  .header p {
-    font-size: 1.1rem;
-  }
-
-  .feature h2 {
-    font-size: 1.4rem;
-  }
-
-  .feature p {
-    font-size: 0.95rem;
-  }
+.submitButton:active {
+  color: #ccc; /* Gray color on active */
 }
