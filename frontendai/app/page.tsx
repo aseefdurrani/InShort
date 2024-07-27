@@ -7,7 +7,7 @@ const LandingPage: React.FC = () => {
     <div className={styles.container}>
       <header className={styles.header}>
         <h1>InShort</h1>
-        <p>Your personalized news summaries and insights</p>
+        <p>Your personalized news and insights</p>
         <Link href="/chat" className={styles.button}>
           Get Started
         </Link>

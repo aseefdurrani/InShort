@@ -1,12 +1,50 @@
-'use client'
+'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import styles from './page.module.css';
 
 export default function ChatPage() {
     const [inputValue, setInputValue] = useState("");
+    const [currentPrompt, setCurrentPrompt] = useState(0);
+    const [fade, setFade] = useState(true);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const prompts = [
+        "How are the global stock markets performing?",
+        "Give me updates on the Olympics",
+        "What are the latest tech trends?",
+        "Any new medical developments?",
+        "What are the recent advancements in AI?",
+        "Tell me about the latest in politics",
+        "What are the top headlines today?",
+        "What's new in the entertainment industry?"
+    ];
+    
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setFade(false);
+            setTimeout(() => {
+                setCurrentPrompt((prevPrompt) => (prevPrompt + 1) % prompts.length);
+                setFade(true);
+            }, 500); // Time for fade-out effect
+        }, 4000); // Change prompt every 4 seconds
+
+        return () => clearInterval(interval);
+    }, [prompts.length]);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setInputValue(e.target.value);
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto'; // Reset the height
+            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`; // Set to the new scrollHeight
+        }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
+        }
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -16,29 +54,35 @@ export default function ChatPage() {
     };
 
     return (
-        <div className="container mx-auto p-4">
-            <header className="text-center my-4">
-                <h1 className="text-4xl font-bold">InShort</h1>
-                <p className="text-lg">Your personalized news summaries and insights</p>
+        <div className={styles.container}>
+            <header className={styles.header}>
+                <h1>InShort</h1>
+                <p>Your personalized news and insights</p>
             </header>
-            <main className="flex flex-col items-center pt-20">
-                <form onSubmit={handleSubmit} className="form-control w-full max-w-xs">
-                    <div className="label">
-                        <span className="label-text">Provide a topic you would like today's summary on</span>
+            <main className={styles.main}>
+                <form onSubmit={handleSubmit} className={styles.form}>
+                    <div className={`${styles.label} ${fade ? styles.fadeIn : styles.fadeOut}`}>
+                        <span className={styles.labelText}>{prompts[currentPrompt]}</span>
                     </div>
-                    <input 
-                        type="text" 
-                        placeholder="Type here" 
-                        className="input input-bordered w-full max-w-xs mb-4" 
-                        value={inputValue}
-                        onChange={handleInputChange}
-                    />
-                    <button type="submit" className="btn btn-outline btn-info">Submit</button>
+                    <div className={styles.inputWrapper}>
+                        <textarea
+                            ref={textareaRef}
+                            placeholder="What's on your mind?"
+                            className={styles.textarea}
+                            value={inputValue}
+                            onChange={handleInputChange}
+                            onKeyDown={handleKeyDown}
+                            rows={1}
+                        />
+                        <button type="submit" className={styles.submitButton}>
+                            ➤
+                        </button>
+                    </div>
                 </form>
 
                 <p className="text-lg">just throwing this here</p>
             </main>
-            <footer className="text-center text-sm fixed bottom-0 left-0 w-full bg-white py-2">
+            <footer className={styles.footer}>
                 <p>© 2024 InShort. All rights reserved.</p>
             </footer>
         </div>

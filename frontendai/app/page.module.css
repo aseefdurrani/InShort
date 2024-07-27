@@ -7,6 +7,7 @@
   background-color: #000;
   color: #fff;
   font-family: Arial, sans-serif;
+  padding: 0 2rem;
 }
 
 .header, .footer {
@@ -21,6 +22,7 @@
 
 .header p {
   font-size: 1.2rem;
+  color: #ffe;
   margin-bottom: 1rem;
 }
 
@@ -29,32 +31,6 @@
   opacity: 0.7;
 }
 
-.main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem;
-}
-
-.feature {
-  text-align: center;
-  margin: 2rem 0;
-  max-width: 600px;
-}
-
-.feature h2 {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.feature p {
-  font-size: 1rem;
-  opacity: 0.8;
-}
-
-/* Button Styles */
 .button {
   display: inline-block;
   padding: 0.75rem 1.5rem;
@@ -73,7 +49,32 @@
   border: 2px solid #fff;
 }
 
-/* Media Queries */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 0;
+}
+
+.feature {
+  text-align: center;
+  margin: 1rem 0;
+  max-width: 600px;
+  border-radius: 8px;
+}
+
+.feature h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.feature p {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
 @media (max-width: 700px) {
   .header h1 {
     font-size: 2.5rem;
@@ -98,7 +99,7 @@
 
 @media (min-width: 701px) and (max-width: 1120px) {
   .feature {
-    margin: 1.5rem 0;
+    margin: 1rem 0;
   }
 
   .header h1 {
