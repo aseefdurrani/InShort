@@ -46,9 +46,12 @@ LAST_PROCESSED_FILE = "last_processed.json"
 
 # Function to load last processed URLs
 def load_last_processed():
-    if os.path.exists(LAST_PROCESSED_FILE):
-        with open(LAST_PROCESSED_FILE, "r") as file:
-            return json.load(file)
+    try:
+        if os.path.exists(LAST_PROCESSED_FILE):
+            with open(LAST_PROCESSED_FILE, "r") as file:
+                return json.load(file)
+    except Exception as e:
+        logging.error(f"Error loading last processed file: {e}")
     return {}
 
 # Function to save last processed URLs
@@ -184,7 +187,8 @@ def process_and_store_article(url, content, categories, stored_urls, batch):
 # Main function
 def main():
     categories = {
-        "finance": "(finance OR stock market OR investment OR bank OR economy OR recession OR inflation OR cryptocurrency)",
+        "tech": "(technology OR tech OR gadgets OR AI OR artificial intelligence OR machine learning OR software OR hardware OR innovation OR startup)",
+        "business": "(business OR stock market OR investment OR bank OR economy OR recession OR inflation OR cryptocurrency OR merger OR acquisition)",
         "climate": "(climate change OR global warming OR extreme weather OR hurricane OR tornado OR flood OR drought OR wildfire OR carbon emissions)",
         "health": "(health OR medical OR healthcare OR medicine OR disease OR virus OR pandemic OR vaccine OR treatment OR hospital)",
         "sports": "(sports OR Olympics OR athletics OR athlete OR championship OR tournament OR league OR game OR match OR player)",
