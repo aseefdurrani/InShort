@@ -80,7 +80,6 @@ export default function ChatPage() {
                     </div>
                 </form>
 
-                <p className="text-lg">just throwing this here</p>
             </main>
             <footer className={styles.footer}>
                 <p>© 2024 InShort. All rights reserved.</p>

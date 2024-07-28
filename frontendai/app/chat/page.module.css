@@ -24,7 +24,13 @@
   justify-content: space-between;
   align-items: center;
   min-height: 100vh;
-  background-color: #000;
+  background: 
+    linear-gradient(
+      rgba(0, 0, 0, 0.75), 
+      rgba(0, 0, 0, 0.9)
+    ), 
+    url('/newspaper-bg.webp') no-repeat center center fixed;
+  background-size: cover;
   color: #fff;
   font-family: Arial, sans-serif;
 }
