@@ -95,9 +95,9 @@
   max-width: 1000px;
   height: 70vh; /* Fixed height for the chatbox */
   overflow-y: auto;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.4);
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: 18px;
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
@@ -105,21 +105,26 @@
 
 /* Chat Entry Styling */
 .chatEntry {
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 .userMessage {
   text-align: right;
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
+  margin-bottom: 1.2rem;
+  margin-top: 0.5rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  font-size: 1.1rem;
   color: rgb(227, 229, 230);
 }
 
 .aiMessage {
   text-align: left;
   margin-bottom: 0.5rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
   font-size: 1rem;
-  color: #aaf;
+  color: #d6bb9f;
 }
 
 .urlToggle {
@@ -158,11 +163,12 @@
 .inputWrapper {
   position: relative;
   width: 100%;
+  padding-top: 8px;
 }
 
 .textarea {
   width: 100%;
-  padding: 10px;
+  padding: 13px;
   resize: none;
   overflow: hidden;
   font-size: 1rem;
