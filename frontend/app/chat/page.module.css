@@ -92,8 +92,8 @@
 /* Chatbox Styling */
 .chatbox {
   width: 100%;
-  max-width: 900px;
-  height: 50vh; /* Fixed height for the chatbox */
+  max-width: 1000px;
+  height: 70vh; /* Fixed height for the chatbox */
   overflow-y: auto;
   background-color: rgba(0, 0, 0, 0.6);
   padding: 1rem;
@@ -120,6 +120,30 @@
   margin-bottom: 0.5rem;
   font-size: 1rem;
   color: #aaf;
+}
+
+.urlToggle {
+  margin-top: 0.5rem;
+}
+
+.urlList {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.urlList a {
+  color: #ff8c00; /* Bright orange for links */
+  text-decoration: none;
+  margin-bottom: 0.5rem;
+}
+
+.urlList a:hover {
+  color: #ffa500; /* Lighter orange on hover */
+}
+
+.urlList a:active {
+  color: #ff8c00; /* Return to original color on active */
 }
 
 /* Form and Label Styling */
