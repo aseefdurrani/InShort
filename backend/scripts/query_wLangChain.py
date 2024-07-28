@@ -1,4 +1,5 @@
 import os
+import sys
 from dotenv import load_dotenv
 from langchain_openai.chat_models import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
@@ -11,64 +12,61 @@ from langchain_community.vectorstores import DocArrayInMemorySearch
 from langchain_openai.embeddings import OpenAIEmbeddings
 from pinecone import Pinecone
 
-
+# Load environment variables from .env file
 load_dotenv()
-
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
 
+# Initialize the OpenAI model
 model = ChatOpenAI(openai_api_key=OPENAI_API_KEY, model="gpt-4o-mini")
+
+# Initialize the output parser
 parser = StrOutputParser()
 
+# Define the prompt template for summarizing articles
 template = """
-Summarize the following articles in a concise manner, highlighting the main ideas of each:
+You are a knowledgeable news assistant, tasked with providing concise and relevant summaries of current events. Use the following articles to answer the user's question:
 
 Context: {context}
 
-Question: {question}
+User's Question: {question}
 
-Please provide a summary that addresses the question based on the given articles.
+Instructions:
+1. Begin your response with a natural, conversational opener like "Recent news reports indicate that..." or "According to the latest information...".
+2. Directly address the user's question using insights from the provided articles.
+3. Highlight only the most relevant and important information related to the question.
+4. Use a neutral, informative tone throughout your response.
+5. If the articles don't provide sufficient information to fully answer the question, acknowledge this and provide the best available information.
+
+Your response:
 """
 
 prompt = ChatPromptTemplate.from_template(template)
+
+# Initialize the embeddings model
 embeddings = OpenAIEmbeddings()
 
-# query_sentence1_similarity = cosine_similarity([embedded_query], [sentence1])[0][0]
-# query_sentence2_similarity = cosine_similarity([embedded_query], [sentence2])[0][0]
-
-# print(query_sentence1_similarity, query_sentence2_similarity)
-
-
-# trying to get functionality with pinecone
-
-
+# Print a newline for better readability in the console
 print('\n')
 
-
-# # Initialize Pinecone
-# pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
-# index = pc.Index("news-articles")
-
-
-# Initialize Pinecone
+# Initialize Pinecone with the API key
 pinecone = Pinecone(api_key=PINECONE_API_KEY)
-index_name = "news-articles"
+index_name = "news"
 
-# Create PineconeVectorStore from the existing index
+# Create a PineconeVectorStore from the existing index
 vector_store = PineconeVectorStore(index_name=index_name, embedding=embeddings)
 
-# Create a retriever from the Pinecone vector store
+# Create a retriever from the Pinecone vector store to fetch top 3 relevant documents
 retriever = vector_store.as_retriever(search_kwargs={"k": 3})
 
 def get_top_articles(query):
-    # Retrieve top 3 articles
+    # Retrieve top 3 articles based on the query
     results = retriever.get_relevant_documents(query)
-    
-    # Extract the text from the results
+    # Extract the text content from the results
     articles = [result.page_content for result in results]
     return articles
 
-# Set up the chain
+# Set up the chain of operations
 chain = (
     {"context": lambda x: "\n\n".join(get_top_articles(x["question"])), "question": RunnablePassthrough()}
     | prompt
@@ -76,10 +74,17 @@ chain = (
     | parser
 )
 
-# User query
-query = "What is some exciting news about climate around the globe?"
+def get_response(query):
+    try:
+        # Invoke the chain with the query and get the response
+        response = chain.invoke({"question": query})
+        return response
+    except Exception as e:
+        print(f"Error in get_response: {str(e)}")
+        raise
 
-# Invoke the chain with the query
-response = chain.invoke({"question": query})
-
-print(response)
+if __name__ == "__main__":
+    # Get the query from command line arguments or use a default message
+    query = sys.argv[1] if len(sys.argv) > 1 else "Say 'Please provide a valid input'"
+    # Print the response to the console
+    print(get_response(query))
