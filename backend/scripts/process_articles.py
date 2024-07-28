@@ -144,7 +144,7 @@ def main():
                     break
 
         maxrecords += 250  # Increase to fetch more articles in subsequent requests
-        time.sleep(1)  # Add a delay between each iteration to avoid rate limits
+        time.sleep(0.5)  # Add a delay between each iteration to avoid rate limits
 
     logging.info(f"Stored {stored_articles} articles.")
 
