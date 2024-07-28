@@ -4,11 +4,14 @@ import React, { useState, useEffect, useRef } from "react";
 import styles from './page.module.css';
 
 export default function ChatPage() {
+    // State variables
     const [inputValue, setInputValue] = useState("");
     const [currentPrompt, setCurrentPrompt] = useState(0);
     const [fade, setFade] = useState(true);
+    const [response, setResponse] = useState(""); // State to store the response
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+    // List of prompts
     const prompts = [
         "How are the global stock markets performing?",
         "Give me updates on the Olympics",
@@ -20,6 +23,7 @@ export default function ChatPage() {
         "What's new in the entertainment industry?"
     ];
     
+    // Effect to change the prompt every 4 seconds
     useEffect(() => {
         const interval = setInterval(() => {
             setFade(false);
@@ -32,6 +36,7 @@ export default function ChatPage() {
         return () => clearInterval(interval);
     }, [prompts.length]);
 
+    // Handle input change in the textarea
     const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setInputValue(e.target.value);
         if (textareaRef.current) {
@@ -40,6 +45,7 @@ export default function ChatPage() {
         }
     };
 
+    // Handle key down event in the textarea
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
@@ -47,9 +53,23 @@ export default function ChatPage() {
         }
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    // Handle form submission
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Handle the submission logic here
+        try {
+            const response = await fetch("http://localhost:8080/api/chat", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ query: inputValue })
+            });
+            const data = await response.json();
+            setResponse(data.response); // Update the response state
+            console.log("Received response:", data.response);
+        } catch (error) {
+            console.error("Error fetching response:", error);
+        }
         console.log("Submitted topic:", inputValue);
     };
 
@@ -79,7 +99,6 @@ export default function ChatPage() {
                         </button>
                     </div>
                 </form>
-
             </main>
             <footer className={styles.footer}>
                 <p>© 2024 InShort. All rights reserved.</p>
