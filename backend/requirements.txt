@@ -1,30 +1,17 @@
 flask
-transformers
-torch
-scikit-learn
+flask_cors
 pandas
-
 requests
 beautifulsoup4
 pinecone-client
 transformers
 torch
 scikit-learn
-dotenv
+python-dotenv
 langchain
-
-
-** While in the backend directory (cd backend), execute the following on macOS
-python3 -m venv venv (just first time to create the virtualenv)
-source venv/bin/activate
-pip3 install flask transformers torch scikit-learn pandas
-
-*** FOR GDELT
-pip3 install requests beautifulsoup4 sqlalchemy
-
-
-** To RUN the Flask App:
-
-source venv/bin/activate
-
-FLASK_APP=app.py flask run
+langchain_openai
+langchain_core
+langchain_pinecone
+langchain_community
+langdetect
+gunicorn

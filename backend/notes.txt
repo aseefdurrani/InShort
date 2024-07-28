@@ -1,0 +1,14 @@
+** While in the backend directory (cd backend), execute the following on macOS
+python3 -m venv venv (just first time to create the virtualenv)
+source venv/bin/activate
+pip3 install flask transformers torch scikit-learn pandas
+
+*** FOR GDELT
+pip3 install requests beautifulsoup4 sqlalchemy
+
+
+** To RUN the Flask App:
+
+source venv/bin/activate
+
+python3 server.py

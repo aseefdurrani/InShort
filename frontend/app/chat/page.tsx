@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import styles from './page.module.css';
+const BACKEND_URL = 'http://localhost:5001'; // Hardcoded backend URL
 
 export default function ChatPage() {
     const [inputValue, setInputValue] = useState("");
@@ -74,42 +75,39 @@ export default function ChatPage() {
 
     const fetchAIResponse = async (userMessage: string) => {
         try {
-            const response = await fetch('http://localhost:8080/api/chat', {
+            const response = await fetch(`${BACKEND_URL}/api/chat`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ query: userMessage }),
             });
-
-            if (!response.body) {
-                throw new Error('No response body');
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
-            let done = false;
-            let aiResponse = "";
-
-            while (!done) {
-                const { value, done: doneReading } = await reader.read();
-                done = doneReading;
-                const chunk = decoder.decode(value, { stream: true });
-                const parsedChunk = JSON.parse(chunk);
-                if (parsedChunk.response) {
-                    aiResponse += parsedChunk.response;
-                    setChatHistory(prevHistory => {
-                        const updatedHistory = [...prevHistory];
-                        updatedHistory[updatedHistory.length - 1].ai = aiResponse;
-                        return updatedHistory;
-                    });
-                }
+    
+            const responseText = await response.text(); // Get response as text first
+            let responseData: { response: string; };
+    
+            try {
+                responseData = JSON.parse(responseText); // Attempt to parse the JSON
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                console.error('Response text:', responseText);
+                throw new Error('Invalid JSON response');
             }
+    
+            setChatHistory(prevHistory => {
+                const updatedHistory = [...prevHistory];
+                updatedHistory[updatedHistory.length - 1].ai = responseData.response;
+                return updatedHistory;
+            });
         } catch (error) {
             console.error('Error fetching AI response:', error);
         }
     };
-
+    
     return (
         <div className={styles.container}>
             <header className={styles.header}>
