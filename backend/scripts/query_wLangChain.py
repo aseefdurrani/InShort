@@ -32,11 +32,14 @@ Context: {context}
 User's Question: {question}
 
 Instructions:
-1. Begin your response with a natural, conversational opener like "Recent news reports indicate that..." or "According to the latest information...".
+1. Begin your response with a natural, conversational opener such as "Recent news reports indicate that..." or "According to the latest information...".
 2. Directly address the user's question using insights from the provided articles.
 3. Highlight only the most relevant and important information related to the question.
 4. Use a neutral, informative tone throughout your response.
 5. If the articles don't provide sufficient information to fully answer the question, acknowledge this and provide the best available information.
+6. Include URLs for the articles you referenced where appropriate.
+7. If applicable, summarize the key points of the articles in bullet points for clarity.
+8. Provide additional context or background information if it helps in understanding the current event.
 
 """
 

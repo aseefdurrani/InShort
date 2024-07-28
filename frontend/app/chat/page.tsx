@@ -4,16 +4,15 @@ import React, { useState, useEffect, useRef } from "react";
 import styles from './page.module.css';
 
 export default function ChatPage() {
-    // State variables
     const [inputValue, setInputValue] = useState("");
     const [currentPrompt, setCurrentPrompt] = useState(0);
     const [fade, setFade] = useState(true);
-    const [response, setResponse] = useState(""); // State to store the response
-    const [chatHistory, setChatHistory] = useState<{ user: string; ai: string }[]>([]);
+    const [chatHistory, setChatHistory] = useState<{ user: string; ai: string; urls?: { title: string; url: string }[] }[]>([]);
+    const [showSources, setShowSources] = useState<{ [key: number]: boolean }>({});
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const chatEndRef = useRef<HTMLDivElement>(null);
+    const chatContainerRef = useRef<HTMLDivElement>(null);
 
-    // List of prompts
     const prompts = [
         "How are the global stock markets performing?",
         "Give me updates on the Olympics",
@@ -24,6 +23,7 @@ export default function ChatPage() {
         "What are the top headlines today?",
         "What's new in the entertainment industry?"
     ];
+
     useEffect(() => {
         const interval = setInterval(() => {
             setFade(false);
@@ -36,7 +36,15 @@ export default function ChatPage() {
         return () => clearInterval(interval);
     }, [prompts.length]);
 
-    // Handle input change in the textarea
+    useEffect(() => {
+        if (chatEndRef.current && chatContainerRef.current) {
+            chatContainerRef.current.scrollTo({
+                top: chatContainerRef.current.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+    }, [chatHistory]);
+
     const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setInputValue(e.target.value);
         if (textareaRef.current) {
@@ -45,7 +53,6 @@ export default function ChatPage() {
         }
     };
 
-    // Handle key down event in the textarea
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
@@ -53,36 +60,53 @@ export default function ChatPage() {
         }
     };
 
-    // Handle form submission
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        try {
-            const response = await fetch("http://localhost:8080/api/chat", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ query: inputValue })
-            });
-            const data = await response.json();
-            setResponse(data.response); // Update the response state
-            console.log("Received response:", data.response);
-        } catch (error) {
-            console.error("Error fetching response:", error);
-        }
-        console.log("Submitted topic:", inputValue);
         const userMessage = inputValue.trim();
         if (userMessage) {
-            const aiResponse = `Response to "${userMessage}"`; // Replace this with actual AI response logic
-            setChatHistory([...chatHistory, { user: userMessage, ai: aiResponse }]);
+            setChatHistory([...chatHistory, { user: userMessage, ai: "", urls: [] }]);
+            fetchAIResponse(userMessage);
             setInputValue("");
             if (textareaRef.current) {
                 textareaRef.current.style.height = 'auto'; // Reset height after submission
             }
-            if (chatEndRef.current) {
-                chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
-            }
         }
+    };
+
+    const fetchAIResponse = async (userMessage: string) => {
+        try {
+            const response = await fetch('http://localhost:8080/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query: userMessage }),
+            });
+
+            const responseData = await response.json();
+
+            if (!responseData || !responseData.response) {
+                throw new Error('Invalid response format');
+            }
+
+            const { text, urls } = responseData.response;
+
+            setChatHistory(prevHistory => {
+                const updatedHistory = [...prevHistory];
+                updatedHistory[updatedHistory.length - 1].ai = text;
+                updatedHistory[updatedHistory.length - 1].urls = urls;
+                return updatedHistory;
+            });
+        } catch (error) {
+            console.error('Error fetching AI response:', error);
+        }
+    };
+
+    const toggleSourcesVisibility = (index: number) => {
+        setShowSources(prevShowSources => ({
+            ...prevShowSources,
+            [index]: !prevShowSources[index]
+        }));
     };
 
     return (
@@ -97,11 +121,27 @@ export default function ChatPage() {
                         <span className={styles.labelText}>{prompts[currentPrompt]}</span>
                     </div>
                 </div>
-                <div className={styles.chatbox}>
+                <div className={styles.chatbox} ref={chatContainerRef}>
                     {chatHistory.map((entry, index) => (
                         <div key={index} className={styles.chatEntry}>
                             <div className={styles.userMessage}>{entry.user}</div>
                             <div className={styles.aiMessage}>{entry.ai}</div>
+                            {entry.urls && entry.urls.length > 0 && (
+                                <div className={styles.urlToggle}>
+                                    <button onClick={() => toggleSourcesVisibility(index)}>
+                                        {showSources[index] ? "Hide Sources" : "Show Sources"}
+                                    </button>
+                                    {showSources[index] && (
+                                        <div className={styles.urlList}>
+                                            {entry.urls.map((url, urlIndex) => (
+                                                <a key={urlIndex} href={url.url} target="_blank" rel="noopener noreferrer">
+                                                    {url.title}
+                                                </a>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     ))}
                     <div ref={chatEndRef}></div>
