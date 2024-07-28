@@ -7,8 +7,7 @@ export default function ChatPage() {
     const [inputValue, setInputValue] = useState("");
     const [currentPrompt, setCurrentPrompt] = useState(0);
     const [fade, setFade] = useState(true);
-    const [chatHistory, setChatHistory] = useState<{ user: string; ai: string; urls?: { title: string; url: string }[] }[]>([]);
-    const [showSources, setShowSources] = useState<{ [key: number]: boolean }>({});
+    const [chatHistory, setChatHistory] = useState<{ user: string; ai: string }[]>([]);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const chatEndRef = useRef<HTMLDivElement>(null);
     const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -64,7 +63,7 @@ export default function ChatPage() {
         e.preventDefault();
         const userMessage = inputValue.trim();
         if (userMessage) {
-            setChatHistory([...chatHistory, { user: userMessage, ai: "", urls: [] }]);
+            setChatHistory([...chatHistory, { user: userMessage, ai: "" }]);
             fetchAIResponse(userMessage);
             setInputValue("");
             if (textareaRef.current) {
@@ -83,30 +82,32 @@ export default function ChatPage() {
                 body: JSON.stringify({ query: userMessage }),
             });
 
-            const responseData = await response.json();
-
-            if (!responseData || !responseData.response) {
-                throw new Error('Invalid response format');
+            if (!response.body) {
+                throw new Error('No response body');
             }
 
-            const { text, urls } = responseData.response;
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let done = false;
+            let aiResponse = "";
 
-            setChatHistory(prevHistory => {
-                const updatedHistory = [...prevHistory];
-                updatedHistory[updatedHistory.length - 1].ai = text;
-                updatedHistory[updatedHistory.length - 1].urls = urls;
-                return updatedHistory;
-            });
+            while (!done) {
+                const { value, done: doneReading } = await reader.read();
+                done = doneReading;
+                const chunk = decoder.decode(value, { stream: true });
+                const parsedChunk = JSON.parse(chunk);
+                if (parsedChunk.response) {
+                    aiResponse += parsedChunk.response;
+                    setChatHistory(prevHistory => {
+                        const updatedHistory = [...prevHistory];
+                        updatedHistory[updatedHistory.length - 1].ai = aiResponse;
+                        return updatedHistory;
+                    });
+                }
+            }
         } catch (error) {
             console.error('Error fetching AI response:', error);
         }
-    };
-
-    const toggleSourcesVisibility = (index: number) => {
-        setShowSources(prevShowSources => ({
-            ...prevShowSources,
-            [index]: !prevShowSources[index]
-        }));
     };
 
     return (
@@ -126,22 +127,6 @@ export default function ChatPage() {
                         <div key={index} className={styles.chatEntry}>
                             <div className={styles.userMessage}>{entry.user}</div>
                             <div className={styles.aiMessage}>{entry.ai}</div>
-                            {entry.urls && entry.urls.length > 0 && (
-                                <div className={styles.urlToggle}>
-                                    <button onClick={() => toggleSourcesVisibility(index)}>
-                                        {showSources[index] ? "Hide Sources" : "Show Sources"}
-                                    </button>
-                                    {showSources[index] && (
-                                        <div className={styles.urlList}>
-                                            {entry.urls.map((url, urlIndex) => (
-                                                <a key={urlIndex} href={url.url} target="_blank" rel="noopener noreferrer">
-                                                    {url.title}
-                                                </a>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                            )}
                         </div>
                     ))}
                     <div ref={chatEndRef}></div>
