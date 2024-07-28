@@ -38,7 +38,6 @@ Instructions:
 4. Use a neutral, informative tone throughout your response.
 5. If the articles don't provide sufficient information to fully answer the question, acknowledge this and provide the best available information.
 
-Your response:
 """
 
 prompt = ChatPromptTemplate.from_template(template)
