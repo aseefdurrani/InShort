@@ -17,9 +17,3 @@ InShort is a personalized news and insights platform that provides up-to-date in
 - [Python 3.8+](https://www.python.org/downloads/)
 - [Pinecone API Key](https://www.pinecone.io/)
 - [OpenAI API Key](https://beta.openai.com/signup/)
-
-### Clone the Repository
-
-```sh
-git clone https://github.com/yourusername/inshort.git
-cd inshort
