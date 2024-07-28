@@ -30,4 +30,5 @@ def return_home():
 
 # Run the app if this script is executed directly
 if __name__ == "__main__":
-    app.run(debug=True, port=8080)  # Run the app in debug mode on port 8080
+    app.run(host="0.0.0.0", port=5001)
+    # app.run(debug=True, port=8080)  # Run the app in debug mode on port 8080
