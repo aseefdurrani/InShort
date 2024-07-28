@@ -9,7 +9,9 @@ export default function ChatPage() {
     const [currentPrompt, setCurrentPrompt] = useState(0);
     const [fade, setFade] = useState(true);
     const [response, setResponse] = useState(""); // State to store the response
+    const [chatHistory, setChatHistory] = useState<{ user: string; ai: string }[]>([]);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const chatEndRef = useRef<HTMLDivElement>(null);
 
     // List of prompts
     const prompts = [
@@ -22,8 +24,6 @@ export default function ChatPage() {
         "What are the top headlines today?",
         "What's new in the entertainment industry?"
     ];
-    
-    // Effect to change the prompt every 4 seconds
     useEffect(() => {
         const interval = setInterval(() => {
             setFade(false);
@@ -71,6 +71,18 @@ export default function ChatPage() {
             console.error("Error fetching response:", error);
         }
         console.log("Submitted topic:", inputValue);
+        const userMessage = inputValue.trim();
+        if (userMessage) {
+            const aiResponse = `Response to "${userMessage}"`; // Replace this with actual AI response logic
+            setChatHistory([...chatHistory, { user: userMessage, ai: aiResponse }]);
+            setInputValue("");
+            if (textareaRef.current) {
+                textareaRef.current.style.height = 'auto'; // Reset height after submission
+            }
+            if (chatEndRef.current) {
+                chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
     };
 
     return (
@@ -80,10 +92,21 @@ export default function ChatPage() {
                 <p>Your personalized news and insights</p>
             </header>
             <main className={styles.main}>
-                <form onSubmit={handleSubmit} className={styles.form}>
+                <div className={styles.prompts}>
                     <div className={`${styles.label} ${fade ? styles.fadeIn : styles.fadeOut}`}>
                         <span className={styles.labelText}>{prompts[currentPrompt]}</span>
                     </div>
+                </div>
+                <div className={styles.chatbox}>
+                    {chatHistory.map((entry, index) => (
+                        <div key={index} className={styles.chatEntry}>
+                            <div className={styles.userMessage}>{entry.user}</div>
+                            <div className={styles.aiMessage}>{entry.ai}</div>
+                        </div>
+                    ))}
+                    <div ref={chatEndRef}></div>
+                </div>
+                <form onSubmit={handleSubmit} className={styles.form}>
                     <div className={styles.inputWrapper}>
                         <textarea
                             ref={textareaRef}

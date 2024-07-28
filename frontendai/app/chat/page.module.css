@@ -61,18 +61,17 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-end; /* Aligns items at the bottom */
   align-items: center;
-  padding: 2rem;
+  padding: 0.5rem;
+  width: 100%;
 }
 
-/* Form and Label Styling */
-.form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+/* Prompts Section Styling */
+.prompts {
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
+  margin-bottom: 1rem;
 }
 
 .label {
@@ -82,7 +81,6 @@
   height: 50px;
   width: 100%;
   text-align: center;
-  margin-bottom: 16px;
   white-space: nowrap; /* Ensure text stays on one line */
 }
 
@@ -91,12 +89,51 @@
   color: #bbb; /* Softer grey for better contrast */
 }
 
-/* Input Wrapper for Text Area and Submit Button */
+/* Chatbox Styling */
+.chatbox {
+  width: 100%;
+  max-width: 900px;
+  height: 50vh; /* Fixed height for the chatbox */
+  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Chat Entry Styling */
+.chatEntry {
+  margin-bottom: 1rem;
+}
+
+.userMessage {
+  text-align: right;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: rgb(227, 229, 230);
+}
+
+.aiMessage {
+  text-align: left;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: #aaf;
+}
+
+/* Form and Label Styling */
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+}
+
 .inputWrapper {
   position: relative;
   width: 100%;
-  max-width: 420px;
-  min-width: 420px;
 }
 
 .textarea {
